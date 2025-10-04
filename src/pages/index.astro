@@ -2,14 +2,11 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import "../styles/global.css";   // <-- importa el CSS
 ---
-<BaseLayout title="Select recommendation">
+<BaseLayout title="Nimbus Astralito">
   <main class="page">
     <!-- Sidebar izquierda -->
     <aside class="sidebar">
-      <nav>
-        <a class="side-item side-active" href="#">Data Analysis</a>
-        <a class="side-item" href="#">Quiz</a>
-      </nav>
+
     </aside>
 
     <!-- Contenido principal -->
@@ -37,7 +34,7 @@ import "../styles/global.css";   // <-- importa el CSS
         <div class="card-wrap">
           <input type="radio" id="mode-personalized" name="mode" value="personalized" checked />
           <label class="card" for="mode-personalized">
-            <span class="check checked"></span>
+			<span class="check"></span>
             <span class="label-text">Personalized</span>
           </label>
         </div>
