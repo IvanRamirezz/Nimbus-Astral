@@ -1,14 +1,61 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+import BaseLayout from "../layouts/BaseLayout.astro";
+import "../styles/global.css";   // <-- importa el CSS
 ---
+<BaseLayout title="Select recommendation">
+  <main class="page">
+    <!-- Sidebar izquierda -->
+    <aside class="sidebar">
+      <nav>
+        <a class="side-item side-active" href="#">Data Analysis</a>
+        <a class="side-item" href="#">Quiz</a>
+      </nav>
+    </aside>
 
-<Layout>
-	<a href="/map" class="text-blue-600 hover:underline">
-  Ir al mapa
-</a>
+    <!-- Contenido principal -->
+    <section class="content">
+      <div class="hero-icon" aria-hidden="true">
+        <!-- nubecita/sol simple -->
+        <svg width="72" height="50" viewBox="0 0 72 50" fill="none">
+          <circle cx="58" cy="17" r="14" fill="#FDB241"/>
+          <path d="M20 38a10 10 0 0 1 8.5-9.9 12 12 0 0 1 22.7 4.1h3.3A8.5 8.5 0 0 1 63 40.6c0 4.7-3.8 8.4-8.5 8.4H25.5C22 49 19 46 19 42.5c0-1.8.4-3.4 1-4.5Z" fill="#fff"/>
+        </svg>
+      </div>
 
-</Layout>
+      <h1 class="heading">Select recommendation</h1>
+
+      <!-- Radios accesibles estilizados como tarjetas -->
+      <form class="cards" onsubmit="return false">
+        <div class="card-wrap">
+          <input type="radio" id="mode-general" name="mode" value="general" />
+          <label class="card" for="mode-general">
+            <span class="check"></span>
+            <span class="label-text">General</span>
+          </label>
+        </div>
+
+        <div class="card-wrap">
+          <input type="radio" id="mode-personalized" name="mode" value="personalized" checked />
+          <label class="card" for="mode-personalized">
+            <span class="check checked"></span>
+            <span class="label-text">Personalized</span>
+          </label>
+        </div>
+      </form>
+
+      <div class="actions">
+        <button class="btn-primary" type="button">Continue</button>
+        <span class="badge" id="modeBadge">Mode: Personalized</span>
+      </div>
+    </section>
+  </main>
+
+  <!-- JS mínimo para mostrar el modo elegido -->
+  <script is:inline>
+    const radios = document.querySelectorAll('input[name="mode"]');
+    const badge = document.getElementById('modeBadge');
+    radios.forEach(r => r.addEventListener('change', () => {
+      badge.textContent = `Mode: ${r.value === 'general' ? 'General' : 'Personalized'}`;
+    }));
+  </script>
+</BaseLayout>
