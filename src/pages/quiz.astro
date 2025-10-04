@@ -1,94 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 ---
-<BaseLayout title="Quiz – Rangos de temperatura">
-  <section class="quiz-card">
-    <h1 class="h1">Quiz</h1>
-    <p class="h2">Selecciona rangos de temperatura</p>
-
-    <!-- Cold -->
-    <div class="row" data-kind="cold">
-      <div class="chk">
-        <input id="coldEnabled" type="checkbox" aria-label="Activar criterio Cold" />
-        <span></span>
-      </div>
-
-      <div class="slider-wrap">
-        <div class="label">1. Cold ❄️</div>
-        <div class="range-track track-cold">
-          <div class="fill" id="coldFill"></div>
-          <input id="cold" type="range" min="-10" max="30" step="1" value="13" />
-        </div>
-      </div>
-
-      <output id="coldOut" class="value" for="cold">13°</output>
-    </div>
-
-    <!-- Hot -->
-    <div class="row" data-kind="hot">
-      <div class="chk">
-        <input id="hotEnabled" type="checkbox" aria-label="Activar criterio Hot" checked />
-        <span></span>
-      </div>
-
-      <div class="slider-wrap">
-        <div class="label">2. Hot ☀️</div>
-        <div class="range-track track-hot">
-          <div class="fill" id="hotFill"></div>
-          <input id="hot" type="range" min="20" max="50" step="1" value="45" />
-        </div>
-      </div>
-
-      <output id="hotOut" class="value" for="hot">45°</output>
-    </div>
-
-    <div class="actions">
-      <button class="btn" id="nextBtn" type="button">Siguiente</button>
-      <span id="summary" class="badge">Cold: 13°, Hot: 45°</span>
-    </div>
-  </section>
-
-  <!-- comportamiento mínimo -->
-  <script is:inline>
-    // helpers
-    const pct = (val, min, max) => ((val - min) * 100) / (max - min);
-
-    function wire(id, outId, fillId){
-      const el = document.getElementById(id);
-      const out = document.getElementById(outId);
-      const fill = document.getElementById(fillId);
-      const update = () => {
-        out.value = el.value + "°";
-        const p = pct(+el.value, +el.min, +el.max);
-        fill.style.inset = `0 ${100 - p}% 0 0`;
-        summarize();
-      };
-      el.addEventListener('input', update);
-      update();
-    }
-
-    function summarize(){
-      const cold = document.getElementById('cold').value;
-      const hot  = document.getElementById('hot').value;
-      document.getElementById('summary').textContent = `Cold: ${cold}°, Hot: ${hot}°`;
-    }
-
-    wire('cold','coldOut','coldFill');
-    wire('hot','hotOut','hotFill');
-
-    document.getElementById('nextBtn').addEventListener('click', () => {
-      const data = {
-        coldEnabled: document.getElementById('coldEnabled').checked,
-        hotEnabled:  document.getElementById('hotEnabled').checked,
-        cold: +document.getElementById('cold').value,
-        hot:  +document.getElementById('hot').value
-      };
-      // aquí puedes navegar según modo o guardar en localStorage:
-      console.log('quiz values', data);
-      // location.href = "/resultado"; // si quieres continuar
-    });
-  </script>
-</BaseLayout>
 
 <style>
     /* --- Base --- */
@@ -205,3 +117,93 @@ input[type="range"]::-moz-range-thumb{
 }
 
 </style>
+
+<BaseLayout title="Quiz – Rangos de temperatura">
+  <section class="quiz-card">
+    <h1 class="h1">Quiz</h1>
+    <p class="h2">Selecciona rangos de temperatura</p>
+
+    <!-- Cold -->
+    <div class="row" data-kind="cold">
+      <div class="chk">
+        <input id="coldEnabled" type="checkbox" aria-label="Activar criterio Cold" />
+        <span></span>
+      </div>
+
+      <div class="slider-wrap">
+        <div class="label">1. Cold ❄️</div>
+        <div class="range-track track-cold">
+          <div class="fill" id="coldFill"></div>
+          <input id="cold" type="range" min="-10" max="30" step="1" value="13" />
+        </div>
+      </div>
+
+      <output id="coldOut" class="value" for="cold">13°</output>
+    </div>
+
+    <!-- Hot -->
+    <div class="row" data-kind="hot">
+      <div class="chk">
+        <input id="hotEnabled" type="checkbox" aria-label="Activar criterio Hot" checked />
+        <span></span>
+      </div>
+
+      <div class="slider-wrap">
+        <div class="label">2. Hot ☀️</div>
+        <div class="range-track track-hot">
+          <div class="fill" id="hotFill"></div>
+          <input id="hot" type="range" min="20" max="50" step="1" value="45" />
+        </div>
+      </div>
+
+      <output id="hotOut" class="value" for="hot">45°</output>
+    </div>
+
+    <div class="actions">
+      <button class="btn" id="nextBtn" type="button">Siguiente</button>
+      <span id="summary" class="badge">Cold: 13°, Hot: 45°</span>
+    </div>
+  </section>
+
+  <!-- comportamiento mínimo -->
+  <script is:inline>
+    // helpers
+    const pct = (val, min, max) => ((val - min) * 100) / (max - min);
+
+    function wire(id, outId, fillId){
+      const el = document.getElementById(id);
+      const out = document.getElementById(outId);
+      const fill = document.getElementById(fillId);
+      const update = () => {
+        out.value = el.value + "°";
+        const p = pct(+el.value, +el.min, +el.max);
+        fill.style.inset = `0 ${100 - p}% 0 0`;
+        summarize();
+      };
+      el.addEventListener('input', update);
+      update();
+    }
+
+    function summarize(){
+      const cold = document.getElementById('cold').value;
+      const hot  = document.getElementById('hot').value;
+      document.getElementById('summary').textContent = `Cold: ${cold}°, Hot: ${hot}°`;
+    }
+
+    wire('cold','coldOut','coldFill');
+    wire('hot','hotOut','hotFill');
+
+    document.getElementById('nextBtn').addEventListener('click', () => {
+      const data = {
+        coldEnabled: document.getElementById('coldEnabled').checked,
+        hotEnabled:  document.getElementById('hotEnabled').checked,
+        cold: +document.getElementById('cold').value,
+        hot:  +document.getElementById('hot').value
+      };
+      // aquí puedes navegar según modo o guardar en localStorage:
+      console.log('quiz values', data);
+      // location.href = "/resultado"; // si quieres continuar
+    });
+  </script>
+</BaseLayout>
+
