@@ -1,0 +1,207 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+<BaseLayout title="Quiz – Rangos de temperatura">
+  <section class="quiz-card">
+    <h1 class="h1">Quiz</h1>
+    <p class="h2">Selecciona rangos de temperatura</p>
+
+    <!-- Cold -->
+    <div class="row" data-kind="cold">
+      <div class="chk">
+        <input id="coldEnabled" type="checkbox" aria-label="Activar criterio Cold" />
+        <span></span>
+      </div>
+
+      <div class="slider-wrap">
+        <div class="label">1. Cold ❄️</div>
+        <div class="range-track track-cold">
+          <div class="fill" id="coldFill"></div>
+          <input id="cold" type="range" min="-10" max="30" step="1" value="13" />
+        </div>
+      </div>
+
+      <output id="coldOut" class="value" for="cold">13°</output>
+    </div>
+
+    <!-- Hot -->
+    <div class="row" data-kind="hot">
+      <div class="chk">
+        <input id="hotEnabled" type="checkbox" aria-label="Activar criterio Hot" checked />
+        <span></span>
+      </div>
+
+      <div class="slider-wrap">
+        <div class="label">2. Hot ☀️</div>
+        <div class="range-track track-hot">
+          <div class="fill" id="hotFill"></div>
+          <input id="hot" type="range" min="20" max="50" step="1" value="45" />
+        </div>
+      </div>
+
+      <output id="hotOut" class="value" for="hot">45°</output>
+    </div>
+
+    <div class="actions">
+      <button class="btn" id="nextBtn" type="button">Siguiente</button>
+      <span id="summary" class="badge">Cold: 13°, Hot: 45°</span>
+    </div>
+  </section>
+
+  <!-- comportamiento mínimo -->
+  <script is:inline>
+    // helpers
+    const pct = (val, min, max) => ((val - min) * 100) / (max - min);
+
+    function wire(id, outId, fillId){
+      const el = document.getElementById(id);
+      const out = document.getElementById(outId);
+      const fill = document.getElementById(fillId);
+      const update = () => {
+        out.value = el.value + "°";
+        const p = pct(+el.value, +el.min, +el.max);
+        fill.style.inset = `0 ${100 - p}% 0 0`;
+        summarize();
+      };
+      el.addEventListener('input', update);
+      update();
+    }
+
+    function summarize(){
+      const cold = document.getElementById('cold').value;
+      const hot  = document.getElementById('hot').value;
+      document.getElementById('summary').textContent = `Cold: ${cold}°, Hot: ${hot}°`;
+    }
+
+    wire('cold','coldOut','coldFill');
+    wire('hot','hotOut','hotFill');
+
+    document.getElementById('nextBtn').addEventListener('click', () => {
+      const data = {
+        coldEnabled: document.getElementById('coldEnabled').checked,
+        hotEnabled:  document.getElementById('hotEnabled').checked,
+        cold: +document.getElementById('cold').value,
+        hot:  +document.getElementById('hot').value
+      };
+      // aquí puedes navegar según modo o guardar en localStorage:
+      console.log('quiz values', data);
+      // location.href = "/resultado"; // si quieres continuar
+    });
+  </script>
+</BaseLayout>
+
+<style>
+    /* --- Base --- */
+:root{
+  --bg1:#0b2a45; --bg2:#154e83;
+  --ink:#fff; --ink2:rgba(255,255,255,.75);
+  --line:rgba(255,255,255,.18);
+  --cyan:#7ae5ff; --blue:#77b6ff; --red:#ff7a6a;
+  --card:rgba(255,255,255,.06);
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0; color:var(--ink);
+  font:400 16px/1.4 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial;
+  background:
+    radial-gradient(60% 40% at 50% 0%, rgba(59,130,246,.35), transparent),
+    linear-gradient(180deg,var(--bg2),var(--bg1));
+}
+
+/* --- Contenedor de tarjeta --- */
+.quiz-card{
+  max-width: 1080px;
+  margin: clamp(28px,6vw,72px) auto;
+  padding: clamp(18px,3.5vw,32px);
+  border-radius: 24px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  backdrop-filter: blur(2px) saturate(140%);
+}
+.h1{
+  font-size: clamp(32px,6vw,56px);
+  font-weight: 800;
+  letter-spacing:.3px;
+  margin: 0 0 8px;
+}
+.h2{
+  font-size: clamp(18px,3.8vw,28px);
+  color: var(--ink2);
+  margin: 0 0 22px;
+}
+
+/* --- Fila del slider --- */
+.row{
+  display:grid;
+  grid-template-columns: 42px 1fr auto;
+  gap:14px;
+  align-items:center;
+  padding:14px 18px;
+  margin-bottom:10px;
+  border:1px solid var(--line);
+  border-radius:18px;
+  background: linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.03));
+}
+.row .label{
+  display:flex; align-items:center; gap:10px;
+  font-size: clamp(18px,3.5vw,26px);
+  font-weight: 800;
+}
+
+/* --- Checkbox custom (decorativo pero accesible) --- */
+.chk{position:relative; width:26px; height:26px}
+.chk input{position:absolute; inset:0; opacity:0}
+.chk span{
+  display:block; width:100%; height:100%; border-radius:8px;
+  border: 2px solid var(--line); background: rgba(255,255,255,.03);
+}
+.chk input:checked + span{ background:#5bbcf6; border-color:#5bbcf6 }
+
+/* --- Sliders --- */
+.slider-wrap{display:flex; align-items:center; gap:12px}
+.value{
+  min-width:56px; text-align:right; font-size: clamp(18px,3vw,28px); font-weight:800; color:var(--ink);
+}
+
+/* Estilo base de range */
+input[type="range"]{
+  -webkit-appearance:none; appearance:none; width:100%; height:10px;
+  background: transparent; outline:none;
+}
+.range-track{
+  position:relative; width:100%;
+  height:10px; border-radius:999px; overflow:hidden;
+  border:1px solid var(--line); background:rgba(255,255,255,.08);
+}
+
+/* cold (azul) y hot (rojo) */
+.track-cold .fill{ background: linear-gradient(90deg,#8bd1ff, #4aa8ff); }
+.track-hot  .fill{ background: linear-gradient(90deg,#ff9a86, #ff6a5a); }
+
+.fill{ position:absolute; inset:0 100% 0 0; } /* se ajusta con JS */
+
+/* thumb */
+input[type="range"]::-webkit-slider-thumb{
+  -webkit-appearance:none; appearance:none;
+  width:22px; height:22px; border-radius:50%;
+  background:#fff; border:2px solid rgba(0,0,0,.15); box-shadow:0 2px 8px rgba(0,0,0,.25);
+}
+input[type="range"]::-moz-range-thumb{
+  width:22px; height:22px; border-radius:50%;
+  background:#fff; border:2px solid rgba(0,0,0,.15);
+}
+
+/* Botones */
+.actions{ display:flex; gap:14px; margin-top:16px }
+.btn{
+  background:#95ecff; color:#0f2c40; border:none; border-radius:14px;
+  font-weight:800; padding:12px 18px; cursor:pointer;
+}
+.badge{
+  color:#9AEFFF; background:rgba(122,229,255,.12);
+  border:1px solid rgba(122,229,255,.35);
+  border-radius:999px; padding:8px 14px;
+}
+
+</style>
